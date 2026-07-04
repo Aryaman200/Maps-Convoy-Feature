@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "PowerShell(Get-ChildItem -Recurse -File | Select-Object Name, @{N='KB';E={[math]::Round\\($_.Length/1KB,1\\)}}, @{N='Lines';E={\\(Get-Content $_.FullName | Measure-Object -Line\\).Lines}})"
-    ]
-  }
-}
