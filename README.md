@@ -18,4 +18,4 @@ A web application that implements a "Convoy" feature for Google Maps, allowing g
 - WebSockets for real-time updates (Server)
 
 ## Screenshots
-![Convoy Mode Light UI](media/light_mode_mockup.png)
+![Convoy Mode Light UI](assets/light_mode_mockup.png)
