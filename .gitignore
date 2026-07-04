@@ -4,3 +4,7 @@ node_modules/
 
 .claude/
 claude_fable_handoff.md
+
+# Media and screenshots
+media/
+take_screenshots.mjs
