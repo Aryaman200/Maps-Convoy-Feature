@@ -1,0 +1,306 @@
+/* ============================================================
+   CONVOY MODE — ANIMATIONS & MICRO-INTERACTIONS
+   ============================================================
+   Spring physics, marker pulses, route reveals, card staggers,
+   sheet transitions, ripples, and convoy-specific motion.
+   ============================================================ */
+
+/* ── Marker Pulse (Leader Beacon) ────────────────────── */
+@keyframes leaderPulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--convoy-color-leader-glow);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(26, 115, 232, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(26, 115, 232, 0);
+  }
+}
+
+.marker-leader {
+  animation: leaderPulse 2s ease-out infinite;
+}
+
+@keyframes leaderRing {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.leader-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--convoy-color-leader);
+  animation: leaderRing 2s ease-out infinite;
+  pointer-events: none;
+}
+
+/* ── Status Indicator Glow ───────────────────────────── */
+@keyframes statusGlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.status-dot.animated {
+  animation: statusGlow 2s ease-in-out infinite;
+}
+
+/* ── Route Drawing Animation ─────────────────────────── */
+@keyframes routeDraw {
+  from {
+    stroke-dashoffset: 2000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.route-animated {
+  stroke-dasharray: 2000;
+  animation: routeDraw 2s ease-out forwards;
+}
+
+/* ── Card Stagger Enter ──────────────────────────────── */
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-stagger > * {
+  opacity: 0;
+  animation: cardEnter 0.4s var(--md-sys-motion-easing-emphasized-decelerate) forwards;
+}
+.card-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.card-stagger > *:nth-child(2) { animation-delay: 60ms; }
+.card-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.card-stagger > *:nth-child(4) { animation-delay: 180ms; }
+.card-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.card-stagger > *:nth-child(6) { animation-delay: 300ms; }
+.card-stagger > *:nth-child(7) { animation-delay: 360ms; }
+.card-stagger > *:nth-child(8) { animation-delay: 420ms; }
+
+/* ── Slide In/Out ────────────────────────────────────── */
+@keyframes slideInUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideOutDown {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(100%); opacity: 0; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOutLeft {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-100%); opacity: 0; }
+}
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 0.4s var(--md-sys-motion-easing-emphasized-decelerate) forwards;
+}
+.animate-slide-out-down {
+  animation: slideOutDown 0.3s var(--md-sys-motion-easing-emphasized-accelerate) forwards;
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.35s var(--md-sys-motion-easing-emphasized-decelerate) forwards;
+}
+.animate-slide-in-left {
+  animation: slideInLeft 0.35s var(--md-sys-motion-easing-emphasized-decelerate) forwards;
+}
+
+/* ── Scale Pop ───────────────────────────────────────── */
+@keyframes scalePop {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-scale-pop {
+  animation: scalePop 0.5s var(--md-sys-motion-spring) forwards;
+}
+
+/* ── Fade In/Out ─────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+.animate-fade-in {
+  animation: fadeIn 0.3s var(--md-sys-motion-easing-standard) forwards;
+}
+.animate-fade-out {
+  animation: fadeOut 0.2s var(--md-sys-motion-easing-standard) forwards;
+}
+
+/* ── Convoy Creation Success ─────────────────────────── */
+@keyframes convoyCreated {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.15); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-convoy-created {
+  animation: convoyCreated 0.6s var(--md-sys-motion-spring) forwards;
+}
+
+/* ── Member Join Effect ──────────────────────────────── */
+@keyframes memberJoin {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+.animate-member-join {
+  animation: memberJoin 0.5s var(--md-sys-motion-spring) forwards;
+}
+
+/* ── Hazard Alert Flash ──────────────────────────────── */
+@keyframes hazardFlash {
+  0%, 100% { background: var(--convoy-color-hazard); }
+  50% { background: rgba(234, 67, 53, 0.7); }
+}
+.animate-hazard-flash {
+  animation: hazardFlash 0.5s ease-in-out 3;
+}
+
+/* ── Number Count Up ─────────────────────────────────── */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-count-up {
+  animation: countUp 0.4s var(--md-sys-motion-easing-emphasized-decelerate) forwards;
+}
+
+/* ── Marker Bounce ───────────────────────────────────── */
+@keyframes markerBounce {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-10px); }
+  50% { transform: translateY(0); }
+  70% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+.animate-marker-bounce {
+  animation: markerBounce 0.6s ease-out;
+}
+
+/* ── Sheet Content Crossfade ─────────────────────────── */
+@keyframes contentCrossfade {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.sheet-content-transition {
+  animation: contentCrossfade 0.3s var(--md-sys-motion-easing-emphasized-decelerate) forwards;
+}
+
+/* ── Float Up (For new feed items) ───────────────────── */
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    max-height: 0;
+    margin-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 80px;
+    margin-bottom: 4px;
+  }
+}
+.animate-float-up {
+  animation: floatUp 0.4s var(--md-sys-motion-easing-emphasized-decelerate) forwards;
+}
+
+/* ── Ping (Notification dot) ─────────────────────────── */
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ── Progress Indeterminate ──────────────────────────── */
+@keyframes progressIndeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+.progress-indeterminate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--md-sys-color-primary);
+  border-radius: inherit;
+  width: 50%;
+  animation: progressIndeterminate 1.5s var(--md-sys-motion-easing-standard) infinite;
+}
+
+/* ── Convoy Path Flow ────────────────────────────────── */
+@keyframes pathFlow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -30; }
+}
+
+/* ── Rotate ──────────────────────────────────────────── */
+@keyframes rotate360 {
+  to { transform: rotate(360deg); }
+}
+.animate-rotate {
+  animation: rotate360 1s linear infinite;
+}
+
+/* ── Tooltip Enter ───────────────────────────────────── */
+@keyframes tooltipEnter {
+  from { opacity: 0; transform: scale(0.95) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-tooltip {
+  animation: tooltipEnter 0.15s var(--md-sys-motion-easing-standard) forwards;
+}
+
+/* ── Micro-interaction: Button Press ─────────────────── */
+.press-effect {
+  transition: transform 0.1s ease;
+}
+.press-effect:active {
+  transform: scale(0.95);
+}
+
+/* ── Theme Switch Transition ─────────────────────────── */
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition-duration: 300ms !important;
+}

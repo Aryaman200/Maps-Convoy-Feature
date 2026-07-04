@@ -1,0 +1,29 @@
+{
+  "name": "Google Maps — Convoy Mode",
+  "short_name": "Convoy",
+  "description": "Convoy Mode for Google Maps — travel together, arrive together. Lead a group in real-time with synchronized navigation, live tracking, and seamless coordination.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#1a73e8",
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "lang": "en",
+  "categories": ["navigation", "travel", "maps"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,369 @@
+/* ============================================================
+   CONVOY MODE — MAP STYLES
+   ============================================================
+   Custom markers, route overlays, convoy path, POI markers.
+   ============================================================ */
+
+/* ── Map Container ───────────────────────────────────── */
+#map-container {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-map);
+}
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Hide Leaflet defaults we override */
+.leaflet-control-zoom,
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+/* ── Custom Map Markers ──────────────────────────────── */
+.convoy-marker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Leader Marker */
+.marker-leader-container {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.marker-leader-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--convoy-color-leader);
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(26, 115, 232, 0.5);
+  z-index: 2;
+  position: relative;
+}
+.marker-leader-ring-1 {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--convoy-color-leader);
+  opacity: 0.4;
+  animation: leaderRing 2s ease-out infinite;
+}
+.marker-leader-ring-2 {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--convoy-color-leader);
+  opacity: 0.4;
+  animation: leaderRing 2s ease-out infinite 0.5s;
+}
+.marker-leader-heading {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%) rotate(var(--heading, 0deg));
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 10px solid var(--convoy-color-leader);
+  z-index: 3;
+  transform-origin: center 28px;
+  transition: transform 0.5s ease;
+}
+
+/* Follower Marker */
+.marker-follower-container {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.marker-follower-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  z-index: 2;
+  transition: transform 0.3s var(--md-sys-motion-spring);
+}
+.marker-follower-dot:hover {
+  transform: scale(1.15);
+}
+.marker-follower-dot.off-route {
+  border-color: var(--convoy-color-off-route);
+  box-shadow: 0 0 8px rgba(234, 67, 53, 0.4);
+}
+
+/* Google Maps style "you are here" dot */
+.marker-self {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4285f4;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.3), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.marker-self-ring {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(66, 133, 244, 0.15);
+  z-index: -1;
+}
+
+/* Hazard Marker */
+.marker-hazard {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid var(--convoy-color-hazard);
+  box-shadow: 0 1px 4px rgba(234, 67, 53, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.marker-hazard .material-symbols-rounded {
+  font-size: 18px;
+  color: var(--convoy-color-hazard);
+}
+
+/* POI Marker */
+.marker-poi {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.marker-poi .material-symbols-rounded {
+  font-size: 16px;
+}
+.marker-poi.fuel { color: var(--convoy-color-fuel); }
+.marker-poi.rest { color: var(--convoy-color-rest); }
+.marker-poi.charging { color: var(--convoy-color-charging); }
+
+/* Destination Marker */
+.marker-destination {
+  width: 28px;
+  height: 36px;
+  position: relative;
+}
+.marker-destination-pin {
+  width: 28px;
+  height: 28px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--md-sys-color-error);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.marker-destination-pin .material-symbols-rounded {
+  transform: rotate(45deg);
+  font-size: 16px;
+  color: #ffffff;
+}
+.marker-destination-shadow {
+  width: 14px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  margin: 2px auto 0;
+}
+
+/* Meeting Point Marker */
+.marker-meeting {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary);
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.marker-meeting .material-symbols-rounded {
+  font-size: 20px;
+  color: #ffffff;
+}
+
+/* ── Route Polylines ─────────────────────────────────── */
+.leaflet-overlay-pane svg path.convoy-route-main {
+  stroke: var(--convoy-color-route);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 3px rgba(66, 133, 244, 0.4));
+}
+
+.leaflet-overlay-pane svg path.convoy-route-outline {
+  stroke: rgba(66, 133, 244, 0.3);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.leaflet-overlay-pane svg path.convoy-route-follower {
+  stroke: var(--convoy-color-route-alt);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 8 8;
+}
+
+/* ── Map Controls ────────────────────────────────────── */
+.map-control-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--md-sys-color-surface);
+  box-shadow: var(--gm-elevation-fab);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: background var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+  -webkit-tap-highlight-color: transparent;
+}
+.map-control-btn:hover {
+  background: var(--md-sys-color-surface-container);
+}
+.map-control-btn:active {
+  background: var(--md-sys-color-surface-container-high);
+}
+.map-control-btn .material-symbols-rounded {
+  font-size: 22px;
+}
+.map-control-btn.active {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+/* Recenter FAB draws attention while auto-follow is paused */
+.map-control-btn.needs-recenter {
+  background: var(--md-sys-color-primary);
+  color: #fff;
+  animation: recenter-pulse 1.6s ease-in-out infinite;
+}
+@keyframes recenter-pulse {
+  0%, 100% { box-shadow: var(--gm-elevation-fab); }
+  50% { box-shadow: 0 0 0 6px rgba(66,133,244,0.22); }
+}
+
+/* ── Convoy Member Tooltip ───────────────────────────── */
+.marker-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--md-sys-color-surface);
+  box-shadow: var(--md-sys-elevation-2);
+  border-radius: var(--md-sys-shape-small);
+  padding: 6px 10px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+}
+.marker-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--md-sys-color-surface);
+}
+.marker-tooltip .tooltip-name {
+  font-family: var(--md-sys-typescale-label-medium-font);
+  font-size: var(--md-sys-typescale-label-medium-size);
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+.marker-tooltip .tooltip-dist {
+  font-family: var(--md-sys-typescale-label-small-font);
+  font-size: var(--md-sys-typescale-label-small-size);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* ── Dark Mode Map Markers ───────────────────────────── */
+[data-theme="dark"] .marker-leader-dot {
+  border-color: #303134;
+}
+[data-theme="dark"] .marker-follower-dot {
+  border-color: #303134;
+}
+[data-theme="dark"] .marker-hazard {
+  background: #303134;
+}
+[data-theme="dark"] .marker-poi {
+  background: #303134;
+}
+[data-theme="dark"] .marker-destination-pin {
+  border-color: #303134;
+}
+[data-theme="dark"] .map-control-btn {
+  background: var(--md-sys-color-surface-container);
+}
+
+/* ── Speed Indicator Overlay ─────────────────────────── */
+.speed-indicator {
+  position: absolute;
+  bottom: 200px;
+  left: 16px;
+  z-index: var(--z-map-controls);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--md-sys-color-surface);
+  box-shadow: var(--gm-elevation-fab);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: bottom var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+}
+.speed-indicator .speed-value {
+  font-family: var(--md-sys-typescale-title-medium-font);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--md-sys-color-on-surface);
+  line-height: 1;
+}
+.speed-indicator .speed-unit {
+  font-family: var(--md-sys-typescale-label-small-font);
+  font-size: 9px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-weight: 500;
+}
+
+/* ── Convoy Path Glow ────────────────────────────────── */
+.convoy-path-glow {
+  filter: blur(8px);
+  opacity: 0.3;
+}

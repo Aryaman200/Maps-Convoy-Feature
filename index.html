@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1f1f1f" media="(prefers-color-scheme: dark)" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  
+  <!-- SEO -->
+  <title>Google Maps — Convoy Mode</title>
+  <meta name="description" content="Convoy Mode for Google Maps — Travel together, arrive together. Lead a group in real-time with synchronized navigation, live tracking, and seamless coordination." />
+  <meta name="keywords" content="Google Maps, Convoy Mode, group navigation, road trip, caravan, live tracking" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Google Maps — Convoy Mode" />
+  <meta property="og:description" content="Transform navigation from an individual experience into a collaborative, synchronized group experience." />
+  <meta property="og:type" content="website" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+  
+  <!-- App Styles -->
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/map.css" />
+</head>
+<body>
+  <div id="app">
+    
+    <!-- ============================================ -->
+    <!-- MAP CONTAINER                                 -->
+    <!-- ============================================ -->
+    <div id="map-container">
+      <div id="map" role="application" aria-label="Interactive map"></div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SEARCH BAR                                    -->
+    <!-- ============================================ -->
+    <div class="gm-search-bar" id="search-bar" role="search" aria-label="Search Google Maps">
+      <div class="search-avatar" aria-hidden="true">A</div>
+      <span class="search-text">Search here</span>
+      <span class="material-symbols-rounded search-icon" role="button" tabindex="0" aria-label="Voice search">mic</span>
+      <span class="material-symbols-rounded search-icon" role="button" tabindex="0" aria-label="Search by image">photo_camera</span>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- NAVIGATION HEADER (Active Nav)                -->
+    <!-- ============================================ -->
+    <div class="nav-header" id="nav-header" role="banner" aria-label="Navigation instructions">
+      <div class="nav-instruction">
+        <span class="material-symbols-rounded nav-turn-icon" id="nav-turn-icon">straight</span>
+        <span class="nav-direction" id="nav-direction">--</span>
+      </div>
+      <div class="nav-road" id="nav-road">Loading route...</div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ANNOUNCEMENT BANNER                           -->
+    <!-- ============================================ -->
+    <div class="announcement-banner" id="announcement-banner" role="alert" aria-live="assertive">
+      <span class="material-symbols-rounded announcement-icon">campaign</span>
+      <span class="announcement-text"></span>
+      <button class="announcement-close" aria-label="Dismiss announcement" onclick="this.parentElement.classList.remove('visible')">
+        <span class="material-symbols-rounded" style="font-size: 20px;">close</span>
+      </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MAP CONTROL FABS                              -->
+    <!-- ============================================ -->
+    <div class="map-fab-group top">
+      <button class="map-control-btn" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <span class="material-symbols-rounded">dark_mode</span>
+      </button>
+      <button class="map-control-btn" id="voice-toggle" aria-label="Toggle voice guidance" aria-pressed="true" title="Voice guidance">
+        <span class="material-symbols-rounded">volume_up</span>
+      </button>
+    </div>
+
+    <div class="map-fab-group bottom" id="map-fab-group-bottom">
+      <button class="map-control-btn" id="btn-recenter" aria-label="Recenter map" title="Recenter"
+              onclick="ConvoyUI.recenter()">
+        <span class="material-symbols-rounded">my_location</span>
+      </button>
+      <button class="map-control-btn" id="btn-zoom-in" aria-label="Zoom in" title="Zoom in"
+              onclick="ConvoyMap.getMap()?.zoomIn()">
+        <span class="material-symbols-rounded">add</span>
+      </button>
+      <button class="map-control-btn" id="btn-zoom-out" aria-label="Zoom out" title="Zoom out"
+              onclick="ConvoyMap.getMap()?.zoomOut()">
+        <span class="material-symbols-rounded">remove</span>
+      </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SPEED INDICATOR                               -->
+    <!-- ============================================ -->
+    <div class="speed-indicator" id="speed-indicator" style="display: none;" aria-label="Current speed">
+      <span class="speed-value">0</span>
+      <span class="speed-unit">km/h</span>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- BOTTOM SHEET OVERLAY                          -->
+    <!-- ============================================ -->
+    <div class="bottom-sheet-overlay" id="sheet-overlay" aria-hidden="true"></div>
+
+    <!-- ============================================ -->
+    <!-- BOTTOM SHEET                                  -->
+    <!-- ============================================ -->
+    <div class="bottom-sheet hidden" id="bottom-sheet" role="complementary" aria-label="Convoy information panel">
+      <div class="sheet-drag-handle" aria-hidden="true"></div>
+      <div class="sheet-content" id="sheet-content">
+        <!-- Dynamic content rendered by JS -->
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- NAVIGATION BOTTOM BAR                         -->
+    <!-- ============================================ -->
+    <div class="nav-bottom-bar" id="nav-bottom-bar" role="navigation" aria-label="Navigation status">
+      <div class="nav-eta-row">
+        <div class="nav-eta">
+          <span class="nav-eta-time" id="nav-eta-time">--</span>
+          <span class="nav-eta-label" id="nav-eta-label">loading...</span>
+        </div>
+        <button class="btn-icon" aria-label="More options">
+          <span class="material-symbols-rounded">more_vert</span>
+        </button>
+      </div>
+      
+      <!-- Convoy Strip -->
+      <div class="nav-convoy-strip" role="status" aria-label="Convoy status">
+        <span class="material-symbols-rounded convoy-strip-icon">groups</span>
+        <span class="convoy-strip-text" id="nav-member-count">Loading...</span>
+        <div class="convoy-member-avatars" id="nav-member-avatars">
+          <!-- Mini avatars rendered by JS -->
+        </div>
+        <span class="convoy-cohesion" id="convoy-cohesion" title="Convoy cohesion">
+          <span class="cohesion-dot"></span>
+          <span class="cohesion-label">Tight</span>
+        </span>
+      </div>
+
+      <div class="nav-actions" style="margin-top: 12px;">
+        <button class="btn btn-outlined" onclick="ConvoyUI.setSheetState('expanded')" aria-label="Open convoy dashboard">
+          <span class="material-symbols-rounded" style="font-size: 18px;">dashboard</span>
+          Dashboard
+        </button>
+        <button class="btn btn-filled" onclick="ConvoyUI.showScreen('ended'); ConvoyEngine.endConvoy();" aria-label="End navigation">
+          <span class="material-symbols-rounded" style="font-size: 18px;">close</span>
+          End
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- BOTTOM NAVIGATION BAR                         -->
+    <!-- ============================================ -->
+    <nav class="gm-nav-bar" id="nav-bar" role="navigation" aria-label="Main navigation">
+      <button class="nav-item active" data-target="explore" aria-label="Explore">
+        <span class="nav-icon">
+          <span class="material-symbols-rounded">explore</span>
+        </span>
+        <span class="nav-label">Explore</span>
+      </button>
+      <button class="nav-item" data-target="go" aria-label="Go">
+        <span class="nav-icon">
+          <span class="material-symbols-rounded">directions</span>
+        </span>
+        <span class="nav-label">Go</span>
+      </button>
+      <button class="nav-item" data-target="convoy" aria-label="Convoy Mode">
+        <span class="nav-icon">
+          <span class="material-symbols-rounded">groups</span>
+          <span class="convoy-badge animate-ping" style="display: block;"></span>
+        </span>
+        <span class="nav-label">Convoy</span>
+      </button>
+      <button class="nav-item" data-target="saved" aria-label="Saved places">
+        <span class="nav-icon">
+          <span class="material-symbols-rounded">bookmark</span>
+        </span>
+        <span class="nav-label">Saved</span>
+      </button>
+      <button class="nav-item" data-target="contribute" aria-label="Contribute">
+        <span class="nav-icon">
+          <span class="material-symbols-rounded">edit_note</span>
+        </span>
+        <span class="nav-label">Contribute</span>
+      </button>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- SNACKBAR CONTAINER                            -->
+    <!-- ============================================ -->
+    <div class="snackbar-container" id="snackbar-container" aria-live="polite"></div>
+
+    <!-- ============================================ -->
+    <!-- DIALOG OVERLAY                                -->
+    <!-- ============================================ -->
+    <div class="dialog-overlay" id="dialog-overlay" role="dialog" aria-modal="true" aria-label="Dialog">
+      <div class="dialog">
+        <!-- Dynamic dialog content -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================ -->
+  <!-- SCRIPTS                                       -->
+  <!-- ============================================ -->
+  
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- QR Code Generator -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  
+  <!-- App Modules (order matters) -->
+  <script src="js/utils.js"></script>
+  <script src="js/route-data.js"></script>
+  <script src="js/route-model.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/convoy.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/activity.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

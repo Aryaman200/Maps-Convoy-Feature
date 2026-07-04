@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Convoy Mode">
+  <!-- ── Background ── -->
+  <rect width="512" height="512" rx="112" fill="#1a73e8"/>
+
+  <!-- ── Route line ── -->
+  <path d="M120 372 C 120 300, 200 300, 200 240 S 312 180, 312 140"
+        fill="none" stroke="#ffffff" stroke-width="20" stroke-linecap="round"
+        stroke-dasharray="4 40" opacity="0.55"/>
+
+  <!-- ── Convoy group glyph ── -->
+  <g fill="#ffffff">
+    <!-- Leader (front) -->
+    <circle cx="312" cy="140" r="52"/>
+    <path d="M228 280 c0-46 38-84 84-84 s84 38 84 84 z"/>
+    <!-- Follower (rear) -->
+    <circle cx="176" cy="300" r="42" opacity="0.9"/>
+    <path d="M108 420 c0-38 30-68 68-68 s68 30 68 68 z" opacity="0.9"/>
+  </g>
+</svg>
